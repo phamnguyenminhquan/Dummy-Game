@@ -1,0 +1,16 @@
+# Edit your commit message here, the text after '#' will be ignored by git.
+<type>(<scope>): <description>
+
+# CONVENTIONAL COMMITS CHEAT SHEET
+# ----------------------------------------------------------------------
+# feat:     New feature                 | refactor: Refactor code
+# fix:      Bug fix                     | perf:     Performance boost
+# docs:     Documentation changes       | style:    Code formatting
+# chore:    Build/Tools/Maintenance     | test:     Add/fix tests
+# ----------------------------------------------------------------------
+# RULES:
+# 1. Subject line must be under 70 characters.
+# 2. Use imperative mood (e.g., "add" not "added", "fix" not "fixes").
+# 3. Leave a blank line before starting the body below.
+
+-

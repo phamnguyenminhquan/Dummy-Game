@@ -1,0 +1,3 @@
+# Auto-changing to LF when saving to Git 
+# and changing back to the suitable format based on the OS when clone/pull to your local PC
+text=auto
