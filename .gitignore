@@ -1,2 +1,6 @@
 # vscode settings
 .vscode/
+
+# Godot-specific ignore cases
+.godot/
+*.translation
