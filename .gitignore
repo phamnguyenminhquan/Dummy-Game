@@ -1,2 +1,7 @@
 # vscode settings
 .vscode/
+
+# Godot-specific overrides
+.godot/
+*.translation
+
