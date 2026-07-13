@@ -11,6 +11,7 @@ func _ready():
 	# If this player character belongs to the local machine, turn on the camera.
 	# If it belongs to another player on the network, keep the camera off.
 	if is_multiplayer_authority():
+		
 		camera.make_current()
 
 func _physics_process(_delta):

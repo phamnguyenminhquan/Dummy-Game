@@ -57,6 +57,9 @@ metadata/_edit_group_ = true
 shape = SubResource("CapsuleShape2D_fkugw")
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=1099105296]
+position_smoothing_enabled = true
+drag_horizontal_enabled = true
+drag_vertical_enabled = true
 
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="." unique_id=1016075557]
 replication_config = SubResource("SceneReplicationConfig_wvtmh")
