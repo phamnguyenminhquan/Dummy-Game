@@ -1,0 +1,16 @@
+[gd_scene format=3 uid="uid://xdvbh2ivlx1t"]
+
+[ext_resource type="Texture2D" uid="uid://c0qtxmpjultbt" path="res://assets/textures/playerGrey_up1.png" id="1_x0vwl"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_8ealr"]
+radius = 54.0
+height = 138.0
+
+[node name="StaticBody2D" type="StaticBody2D" unique_id=405382452]
+metadata/_edit_group_ = true
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=991658042]
+texture = ExtResource("1_x0vwl")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=85044928]
+shape = SubResource("CapsuleShape2D_8ealr")
