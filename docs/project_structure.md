@@ -31,12 +31,12 @@ res://
 │       └── 📜 meeting_ui.tscn
 │
 └── 📂 entities/
-    ├── 📂 player/
-    │   ├── 📜 player.tscn
-    │   ├── 📜 player.gd
-    │   └── 📂 abilities/
-    └── 📂 tasks/
-        ├── 📜 task_base.gd
-        ├── 📂 swipe_card/
-        └── 📂 fix_wiring/
+	├── 📂 player/
+	│   ├── 📜 player.tscn
+	│   ├── 📜 player.gd
+	│   └── 📂 abilities/
+	└── 📂 tasks/
+		├── 📜 task_base.gd
+		├── 📂 swipe_card/
+		└── 📂 fix_wiring/
 ```

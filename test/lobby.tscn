@@ -1,0 +1,54 @@
+[gd_scene format=3 uid="uid://fpmkinylvetw"]
+
+[ext_resource type="Texture2D" uid="uid://tjmc8hpvumv5" path="res://assets/tilesets/ground level rework.png" id="1_v4m4m"]
+[ext_resource type="PackedScene" uid="uid://bycqqn40d3ngn" path="res://entities/player/player.tscn" id="2_hjx3y"]
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_2wvic"]
+texture = ExtResource("1_v4m4m")
+texture_region_size = Vector2i(60, 60)
+4:0/size_in_atlas = Vector2i(52, 27)
+4:0/0 = 0
+4:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-1432, 764, 1496, 756, 1488, -548, 536, -596, 504, -764, 1528, -796, 1536, 812, -1504, 812, -1528, -612, 520, -620, 552, -564, -1472, -572, -1456, 724)
+45:38/size_in_atlas = Vector2i(4, 3)
+45:38/0 = 0
+49:38/size_in_atlas = Vector2i(3, 3)
+49:38/0 = 0
+52:38/size_in_atlas = Vector2i(3, 3)
+52:38/0 = 0
+
+[sub_resource type="TileSet" id="TileSet_gx3r7"]
+tile_shape = 1
+tile_size = Vector2i(64, 64)
+physics_layer_0/collision_layer = 1
+sources/0 = SubResource("TileSetAtlasSource_2wvic")
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_tftiq"]
+texture = ExtResource("1_v4m4m")
+texture_region_size = Vector2i(60, 60)
+52:38/size_in_atlas = Vector2i(3, 3)
+52:38/0 = 0
+49:38/size_in_atlas = Vector2i(3, 3)
+49:38/0 = 0
+45:38/size_in_atlas = Vector2i(4, 3)
+45:38/0 = 0
+33:27/size_in_atlas = Vector2i(22, 11)
+33:27/0 = 0
+33:27/0/physics_layer_0/polygon_0/points = PackedVector2Array(-621.2407, -180.12299, -613.8888, -62.49164, 533.01685, -51.463715, 533.01685, 150.71518, -14.704102, 154.39114, -18.380127, 246.29068, 632.2683, 260.9946, 624.9165, -183.79898)
+33:27/0/physics_layer_0/polygon_1/points = PackedVector2Array(-613.8888, 147.03922, -613.8888, 268.34653, -272.02258, 260.9946, -260.99463, 154.39114)
+
+[sub_resource type="TileSet" id="TileSet_fe1wu"]
+tile_size = Vector2i(32, 32)
+physics_layer_0/collision_layer = 1
+sources/0 = SubResource("TileSetAtlasSource_tftiq")
+
+[node name="Node2D" type="Node2D" unique_id=916647507]
+
+[node name="TileMapLayer" type="TileMapLayer" parent="." unique_id=1672071959]
+tile_map_data = PackedByteArray(0, 0, 255, 255, 255, 255, 0, 0, 4, 0, 0, 0, 0, 0, 242, 255, 253, 255, 0, 0, 33, 0, 27, 0, 0, 0)
+tile_set = SubResource("TileSet_gx3r7")
+
+[node name="TileMapLayer2" type="TileMapLayer" parent="." unique_id=544256603]
+tile_map_data = PackedByteArray(0, 0, 228, 255, 241, 255, 0, 0, 33, 0, 27, 0, 0, 0)
+tile_set = SubResource("TileSet_fe1wu")
+
+[node name="Player" parent="." unique_id=1879362393 instance=ExtResource("2_hjx3y")]
