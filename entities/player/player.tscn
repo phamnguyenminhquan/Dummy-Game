@@ -7,13 +7,13 @@
 [ext_resource type="Texture2D" uid="uid://b8d6qhs4m5h80" path="res://assets/textures/playerGrey_walk2.png" id="5_bectd"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_fkugw"]
-radius = 50.0
-height = 132.0
+radius = 74.0
+height = 156.0
 
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_wvtmh"]
 properties/0/path = NodePath(".:position")
 properties/0/spawn = true
-properties/0/replication_mode = 1
+properties/0/replication_mode = 2
 properties/1/path = NodePath("AnimatedSprite2D:animation")
 properties/1/spawn = true
 properties/1/replication_mode = 1
@@ -51,6 +51,7 @@ animations = [{
 
 [node name="Player" type="CharacterBody2D" unique_id=1879362393]
 script = ExtResource("1_fkugw")
+metadata/_edit_group_ = true
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=610172096]
 position = Vector2(-28, 45)

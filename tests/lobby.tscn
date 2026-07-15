@@ -1,10 +1,9 @@
 [gd_scene format=3 uid="uid://fpmkinylvetw"]
 
-[ext_resource type="Texture2D" uid="uid://tjmc8hpvumv5" path="res://assets/tilesets/ground level rework.png" id="1_v4m4m"]
-[ext_resource type="PackedScene" uid="uid://bycqqn40d3ngn" path="res://entities/player/player.tscn" id="2_hjx3y"]
+[ext_resource type="Texture2D" uid="uid://tjmc8hpvumv5" path="res://assets/tilesets/ground level rework.png" id="1_gaqco"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_2wvic"]
-texture = ExtResource("1_v4m4m")
+texture = ExtResource("1_gaqco")
 texture_region_size = Vector2i(60, 60)
 4:0/size_in_atlas = Vector2i(52, 27)
 4:0/0 = 0
@@ -23,7 +22,7 @@ physics_layer_0/collision_layer = 1
 sources/0 = SubResource("TileSetAtlasSource_2wvic")
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_tftiq"]
-texture = ExtResource("1_v4m4m")
+texture = ExtResource("1_gaqco")
 texture_region_size = Vector2i(60, 60)
 52:38/size_in_atlas = Vector2i(3, 3)
 52:38/0 = 0
@@ -41,7 +40,8 @@ tile_size = Vector2i(32, 32)
 physics_layer_0/collision_layer = 1
 sources/0 = SubResource("TileSetAtlasSource_tftiq")
 
-[node name="Node2D" type="Node2D" unique_id=916647507]
+[node name="Lobby" type="Node2D" unique_id=916647507]
+metadata/_edit_group_ = true
 
 [node name="TileMapLayer" type="TileMapLayer" parent="." unique_id=1672071959]
 tile_map_data = PackedByteArray(0, 0, 255, 255, 255, 255, 0, 0, 4, 0, 0, 0, 0, 0, 242, 255, 253, 255, 0, 0, 33, 0, 27, 0, 0, 0)
@@ -50,5 +50,3 @@ tile_set = SubResource("TileSet_gx3r7")
 [node name="TileMapLayer2" type="TileMapLayer" parent="." unique_id=544256603]
 tile_map_data = PackedByteArray(0, 0, 228, 255, 241, 255, 0, 0, 33, 0, 27, 0, 0, 0)
 tile_set = SubResource("TileSet_fe1wu")
-
-[node name="Player" parent="." unique_id=1879362393 instance=ExtResource("2_hjx3y")]
