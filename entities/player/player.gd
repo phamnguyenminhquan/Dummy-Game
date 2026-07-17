@@ -11,8 +11,17 @@ func _ready():
 	# If this player character belongs to the local machine, turn on the camera.
 	# If it belongs to another player on the network, keep the camera off.
 	if is_multiplayer_authority():
-		
 		camera.make_current()
+
+func _enter_tree():
+	var id = name.to_int()
+	
+	# 1. Cấp quyền điều khiển nhân vật cho Peer có ID này
+	set_multiplayer_authority(id)
+	
+	# 2. CÁI NÀY QUAN TRỌNG: Cấp quyền cho cả node Synchronizer nữa!
+	# (Thay "$MultiplayerSynchronizer" bằng tên chính xác của node đó trong scene của bạn)
+	$MultiplayerSynchronizer.set_multiplayer_authority(id)
 
 func _physics_process(_delta):
 	# Only allow movement if the local machine owns this player

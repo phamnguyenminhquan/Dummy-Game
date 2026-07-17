@@ -7,13 +7,13 @@
 [ext_resource type="Texture2D" uid="uid://b8d6qhs4m5h80" path="res://assets/textures/playerGrey_walk2.png" id="5_bectd"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_fkugw"]
-radius = 50.0
-height = 132.0
+radius = 44.0
+height = 104.0
 
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_wvtmh"]
 properties/0/path = NodePath(".:position")
 properties/0/spawn = true
-properties/0/replication_mode = 1
+properties/0/replication_mode = 2
 properties/1/path = NodePath("AnimatedSprite2D:animation")
 properties/1/spawn = true
 properties/1/replication_mode = 1
@@ -51,14 +51,16 @@ animations = [{
 
 [node name="Player" type="CharacterBody2D" unique_id=1879362393]
 script = ExtResource("1_fkugw")
+metadata/_edit_group_ = true
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=610172096]
-position = Vector2(-28, 45)
+light_mask = 2
+visibility_layer = 2
+position = Vector2(0, 1)
 shape = SubResource("CapsuleShape2D_fkugw")
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=1099105296]
-position = Vector2(-8, 11)
-zoom = Vector2(0.575, 0.575)
+zoom = Vector2(1.21, 1.21)
 position_smoothing_enabled = true
 drag_horizontal_enabled = true
 drag_vertical_enabled = true
@@ -67,7 +69,6 @@ drag_vertical_enabled = true
 replication_config = SubResource("SceneReplicationConfig_wvtmh")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=2051914838]
-position = Vector2(-28.000002, 58.898434)
-scale = Vector2(1.2980324, 1.3348379)
+scale = Vector2(0.8518519, 0.8666667)
 sprite_frames = SubResource("SpriteFrames_8ealr")
 animation = &"walk"
