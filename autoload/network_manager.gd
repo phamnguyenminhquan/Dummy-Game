@@ -5,10 +5,19 @@ signal player_connected(peer_id: int, player_info: Dictionary)
 signal player_disconnected(peer_id: int)
 signal server_disconnected
 signal connection_failed
+signal room_list_updated(rooms: Dictionary)
 
 const PORT: int = 7000
+const DISCOVERY_PORT: int = 7001
 const DEFAULT_SERVER_IP: String = "127.0.0.1" # IPv4 Localhost
 const MAX_CONNECTIONS: int = 32
+const DISCOVERY_PING: String = "ROOM_DISCOVERY_PING"
+
+var room_name: String = "Default Room"
+var discovery_server:= PacketPeerUDP.new()
+var discovery_client := PacketPeerUDP.new()
+var is_hosting_broadcast: bool = false
+var found_room : Dictionary = {} #ip_address {name, players}
 
 func _ready() -> void:
 	# Connect Godot's built-in multiplayer connection events
@@ -18,16 +27,40 @@ func _ready() -> void:
 	multiplayer.connection_failed.connect(_on_connected_fail)
 	multiplayer.server_disconnected.connect(_on_server_disconnected)
 
+# --- CHECK FOR PINGS BETWEEN CLIENT AND SERVER ---
+func _process(_delta: float) -> void:
+	# HOST SIDE: answer discovery pings
+	if is_hosting_broadcast and discovery_server.get_available_packet_count() > 0:
+		var packet := discovery_server.get_packet().get_string_from_utf8()
+		if packet == DISCOVERY_PING:
+			var sender_ip := discovery_server.get_packet_ip()
+			var sender_port := discovery_server.get_packet_port()
+			var reply := "%s|%d" % [room_name, PlayerManager.get_player_count()]
+			discovery_server.set_dest_address(sender_ip, sender_port)
+			discovery_server.put_packet(reply.to_utf8_buffer())
+
+	# CLIENT SIDE: collect replies while searching
+	if discovery_client.get_available_packet_count() > 0:
+		var packet := discovery_client.get_packet().get_string_from_utf8()
+		var sender_ip := discovery_client.get_packet_ip()
+		var parts := packet.split("|")
+		if parts.size() == 2:
+			found_room[sender_ip] = {"name": parts[0], "players": int(parts[1])}
+			room_list_updated.emit(found_room)
 # --- NETWORK SETUP ---
 
 ## Hosts a new game server
-func create_game() -> Error:
+
+func create_game(p_room_name: String = "Default Room") -> Error:
 	var peer = ENetMultiplayerPeer.new()
 	var error = peer.create_server(PORT, MAX_CONNECTIONS)
 	if error != OK:
 		return error
 	multiplayer.multiplayer_peer = peer
 	
+	room_name = p_room_name
+	discovery_server.bind(DISCOVERY_PORT)
+	is_hosting_broadcast = true
 	# Since the Host is also a player, register the host locally immediately
 	var host_id = 1
 	PlayerManager.register_player(host_id, PlayerManager.get_local_network_data())
@@ -95,3 +128,10 @@ func _on_connected_fail() -> void:
 func _on_server_disconnected() -> void:
 	remove_multiplayer_peer()
 	server_disconnected.emit()
+
+func search_for_rooms() -> void:
+	found_room.clear()
+	discovery_client.close()
+	discovery_client.set_broadcast_enabled(true)
+	discovery_client.set_dest_address("255.255.255.255", DISCOVERY_PORT)
+	discovery_client.put_packet(DISCOVERY_PING.to_utf8_buffer())

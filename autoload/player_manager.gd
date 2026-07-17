@@ -33,3 +33,6 @@ func reset_manager() -> void:
 	players_state.clear()
 	local_player_data["role"] = "Crewmate"
 	local_player_data["is_alive"] = true
+
+func get_player_count() -> int:
+	return players_state.size()

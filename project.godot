@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="Dummy Game"
-run/main_scene="uid://fpmkinylvetw"
+run/main_scene="uid://33w424m8atuw"
 config/features=PackedStringArray("4.7")
 config/icon="res://icon.svg"
 
