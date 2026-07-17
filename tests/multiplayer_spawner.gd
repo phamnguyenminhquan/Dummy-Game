@@ -4,6 +4,8 @@ extends MultiplayerSpawner
 
 func _ready():
 	multiplayer.peer_connected.connect(spawn_player)
+	if multiplayer.is_server():
+		spawn_player(1)
 
 func spawn_player(id: int):
 	if not multiplayer.is_server():
