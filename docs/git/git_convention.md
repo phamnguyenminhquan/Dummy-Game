@@ -1,6 +1,6 @@
 # 🤯 Git Convention
 
-## 🛠️ Structure
+## 🛠️ Structure of a commit message
 
 ```text
 <type>(<scope>): <description>

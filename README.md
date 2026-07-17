@@ -33,96 +33,22 @@
 
 ## 🔗 IV. Project Links
 
-* 📋 [Trello - Task Management](https://trello.com/b/wHDXNywp/dummy-game)
-* 📄 [Workspace Google Drive](https://drive.google.com/drive/folders/1h1P41XgIxmWGoj_YTWr0CQ9Qd5MxfALe?usp=sharing)
+* 📋 [TRELLO - TASK MANAGEMENT](https://trello.com/b/wHDXNywp/dummy-game)
 
 ## 💻 V. Getting Started - How to set up
 
-### For standard uses
+### FOR STANDARD USER
 
 [...]
 
-### For contributors
+### FOR CONTRIBUTOR
 
-#### 1. Fork & Clone
-* First, **create a new fork** of this repository to your personal GitHub account.
-* Then, clone **your forked repository** to your local machine:
-```bash
-git clone <your-forked-repo-link>
-```
-* Move into the project directory and link your local repo back to the original group repo (upstream):
-```bash
-cd <project-directory>
-git remote add upstream <original-group-repo-link>
-```
-* Verify your remotes (you should see both `origin` pointing to your fork, and `upstream` pointing to the group repo):
-```bash
-git remote -v
-```
+Follow these links to know how to set up & start contributing to **Dummy Game**.
+* [⚙️ REPO SETUP](./docs/git/repo_setup.md)
+* [📑 YOUR WORK FLOW](./docs/git/your_work_flow.md)
+* [🧹 CLEAN UP BRANCH](./docs/git/clean_up_branch.md)
 
-#### 2. Configure Repository locally
-* Set up the **mandatory commit template** for this repository:
-```bash
-git config --local commit.template .gitmessage
-```
-* (Optional) Configure VSCode as your default commit text editor to avoid Vim:
-```bash
-git config --local core.editor "code --wait"
-```
+## ℹ️ VI. More Info
 
-#### 3. Create your own branch
-* Before making any changes, always create a new branch from `main`.
-* Branch `main` will be the **product stable state**.
-* Name it according to the feature or task (e.g., `feat/login-page`, `docs/update-readme`):
-```bash
-git switch -c <your-branch-name>
-```
-
-#### 4. Commit your work
-* Stage your changes:
-```bash
-git add .
-```
-* Commit your work **without** the `-m` flag.
-* Your configured text editor (VS Code or Vim) will automatically pop up displaying the template:
-```bash
-git commit
-```
-* You only need to edit the message in that **template message**, then save and exit.
-* ➡️ [How to write a good commit message.](./docs/git_convention.md)
-* How to edit in Vim (in case you skip optional config in **step 2**):
-  - If you are in **normal mode** (the cursor will be **block**), press `i` to enter **insert mode**.
-  - Edit your message, e.g: `docs: add README.md`.
-  - Then, press `Esc` to be back in **normal mode** and type `:wq` and press `Enter` to save your commit.
-* Check your commit message:
-``` bash
-git log
-```
-**Note:** If after you commit your work and want to change the message (only use just after your last commit):
-```bash
-git commit --amend
-```
-
-#### 5. Push your work
-* Push your local branch to your personal forked repository (`origin`) for the first time:
-```bash
-git push -u origin <your_own_branch>
-```
-
-#### 6. Create Pull Request (PR)
-* Go to your forked repository on GitHub website.
-* You will see a yellow banner with a button: **Compare & pull request**.
-* Click it, write a clear description of your changes, and submit the PR to the original group repo (`upstream/main`).
-
-#### 7. Pull & Update locally:
-* To keep your local machine up-to-date with new changes merged by other team members into the group repo, run these commands:
-```bash
-# Switch back to your local main branch
-git switch main
-
-# Fetch and merge changes from the group upstream
-git pull upstream main
-
-# Push the updated main to your personal GitHub fork
-git push origin main
-```
+* [🗃️ PROJECT STRUCTURE](./docs/project_structure.md) - Our Project Structure Plan.
+* [🔏 GIT CONVENTION](./docs/git/git_convention.md) - To see how to write commit messages, etc.
