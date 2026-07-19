@@ -13,18 +13,18 @@ script = ExtResource("1_ppnom")
 
 [node name="PlayButton" type="Button" parent="." unique_id=1580628696]
 layout_mode = 0
-offset_left = 453.0
-offset_top = 208.0
-offset_right = 683.0
-offset_bottom = 273.0
+offset_left = 420.0
+offset_top = 207.0
+offset_right = 676.0
+offset_bottom = 272.0
 text = "Start Game"
 autowrap_mode = 3
 
 [node name="QuitButton" type="Button" parent="." unique_id=1147348765]
 layout_mode = 0
-offset_left = 454.0
-offset_top = 338.0
-offset_right = 684.0
-offset_bottom = 403.0
+offset_left = 420.0
+offset_top = 399.0
+offset_right = 676.0
+offset_bottom = 464.0
 text = "Quit"
 autowrap_mode = 3
