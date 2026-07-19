@@ -6,9 +6,18 @@ extends Control
 @onready var name_input : LineEdit = $LobbyName
 @onready var room_list: ItemList = $ServerPanel/ScrollBar/RoomList
 
-const PORT := 7000
-
 var room_ips: Array[String] = [] #index = row
+var is_joining: bool = false
+
+
+func _ready() -> void:
+	create_button.pressed.connect(_on_create_pressed)
+	join_button.pressed.connect(_on_join_pressed)
+	refresh_button.pressed.connect(_on_refresh_pressed)
+	
+	RoomDiscoveryManager.room_list_updated.connect(_on_room_list_updated)
+	NetworkManager.connection_succeeded.connect(_on_connection_succeeded)
+	NetworkManager.connection_failed.connect(_on_connection_failed)
 
 func _on_room_list_updated(rooms: Dictionary) -> void:
 	room_list.clear()
@@ -25,21 +34,36 @@ func _on_create_pressed() -> void:
 	if err == OK:
 		get_tree().change_scene_to_file("res://tests/main_test.tscn")
 
-func _on_refresh_pressed() -> void:
-	room_list.clear()
-	room_ips.clear()
-	NetworkManager.search_for_rooms()
-	
 func _on_join_pressed() -> void:
 	var selected := room_list.get_selected_items()
 	if selected.is_empty():
 		return
 	var ip := room_ips[selected[0]]
 	var err := NetworkManager.join_game(ip)
-	if err == OK:
-		get_tree().change_scene_to_file("res://tests/main_test.tscn")
-func _ready() -> void:
-	create_button.pressed.connect(_on_create_pressed)
-	join_button.pressed.connect(_on_join_pressed)
-	refresh_button.pressed.connect(_on_refresh_pressed)
-	NetworkManager.room_list_updated.connect(_on_room_list_updated)
+	if err != OK:
+		# Failed to even create the client peer (e.g. bad address) - nothing to wait on
+		push_warning("JoinGame: failed to create client peer (%s)" % err)
+		return
+	
+	is_joining = true
+	join_button.disabled = true
+
+func _on_refresh_pressed() -> void:
+	room_list.clear()
+	room_ips.clear()
+	RoomDiscoveryManager.search_for_rooms()
+
+func _on_connection_succeeded() -> void:
+	if not is_joining:
+		return
+	is_joining = false
+	join_button.disabled = false
+	get_tree().change_scene_to_file("res://tests/main_test.tscn")
+
+func _on_connection_failed() -> void:
+	if not is_joining:
+		return
+	is_joining = false
+	join_button.disabled = false
+	push_warning("JoinGame: connection to server failed or timed out")
+	# TODO: surface this to the player once there's an error/status label in the lobby scene

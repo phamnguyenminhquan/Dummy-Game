@@ -5,19 +5,12 @@ signal player_connected(peer_id: int, player_info: Dictionary)
 signal player_disconnected(peer_id: int)
 signal server_disconnected
 signal connection_failed
-signal room_list_updated(rooms: Dictionary)
+signal connection_succeeded
 
 const PORT: int = 7000
-const DISCOVERY_PORT: int = 7001
 const DEFAULT_SERVER_IP: String = "127.0.0.1" # IPv4 Localhost
 const MAX_CONNECTIONS: int = 32
-const DISCOVERY_PING: String = "ROOM_DISCOVERY_PING"
 
-var room_name: String = "Default Room"
-var discovery_server:= PacketPeerUDP.new()
-var discovery_client := PacketPeerUDP.new()
-var is_hosting_broadcast: bool = false
-var found_room : Dictionary = {} #ip_address {name, players}
 
 func _ready() -> void:
 	# Connect Godot's built-in multiplayer connection events
@@ -27,30 +20,12 @@ func _ready() -> void:
 	multiplayer.connection_failed.connect(_on_connected_fail)
 	multiplayer.server_disconnected.connect(_on_server_disconnected)
 
-# --- CHECK FOR PINGS BETWEEN CLIENT AND SERVER ---
-func _process(_delta: float) -> void:
-	# HOST SIDE: answer discovery pings
-	if is_hosting_broadcast and discovery_server.get_available_packet_count() > 0:
-		var packet := discovery_server.get_packet().get_string_from_utf8()
-		if packet == DISCOVERY_PING:
-			var sender_ip := discovery_server.get_packet_ip()
-			var sender_port := discovery_server.get_packet_port()
-			var reply := "%s|%d" % [room_name, PlayerManager.get_player_count()]
-			discovery_server.set_dest_address(sender_ip, sender_port)
-			discovery_server.put_packet(reply.to_utf8_buffer())
 
-	# CLIENT SIDE: collect replies while searching
-	if discovery_client.get_available_packet_count() > 0:
-		var packet := discovery_client.get_packet().get_string_from_utf8()
-		var sender_ip := discovery_client.get_packet_ip()
-		var parts := packet.split("|")
-		if parts.size() == 2:
-			found_room[sender_ip] = {"name": parts[0], "players": int(parts[1])}
-			room_list_updated.emit(found_room)
+# ==========================================
 # --- NETWORK SETUP ---
+# ==========================================
 
 ## Hosts a new game server
-
 func create_game(p_room_name: String = "Default Room") -> Error:
 	var peer = ENetMultiplayerPeer.new()
 	var error = peer.create_server(PORT, MAX_CONNECTIONS)
@@ -58,9 +33,8 @@ func create_game(p_room_name: String = "Default Room") -> Error:
 		return error
 	multiplayer.multiplayer_peer = peer
 	
-	room_name = p_room_name
-	discovery_server.bind(DISCOVERY_PORT)
-	is_hosting_broadcast = true
+	RoomDiscoveryManager.start_broadcasting(p_room_name)
+	
 	# Since the Host is also a player, register the host locally immediately
 	var host_id = 1
 	PlayerManager.register_player(host_id, PlayerManager.get_local_network_data())
@@ -76,31 +50,49 @@ func join_game(address: String = "") -> Error:
 	if error != OK:
 		return error
 	multiplayer.multiplayer_peer = peer
+	RoomDiscoveryManager.stop_searching()
 	return OK
 
 ## Cleans up the network peer and resets managers
 func remove_multiplayer_peer() -> void:
 	multiplayer.multiplayer_peer = OfflineMultiplayerPeer.new()
 	PlayerManager.reset_manager()
+	RoomDiscoveryManager.reset()
 
+
+# ==========================================
 # --- RPC DATA SYNCHRONIZATION ---
+# ==========================================
 
-## RPC function used by clients to send their data to everyone else
+## RPC function used by clients to send their own data to everyone else
 @rpc("any_peer", "reliable")
 func _register_player_rpc(player_info: Dictionary) -> void:
 	var sender_id = multiplayer.get_remote_sender_id()
-	
-	# Save the received data into the PlayerManager's global state
 	PlayerManager.register_player(sender_id, player_info)
 	player_connected.emit(sender_id, player_info)
 
+## RPC function used ONLY by the Server to introduce an existing player
+## to a newly-connected peer (sender_id can't be trusted here, so we pass the id explicitly)
+@rpc("authority", "call_remote", "reliable")
+func _sync_existing_player_rpc(peer_id: int, player_info: Dictionary) -> void:
+	PlayerManager.register_player(peer_id, player_info)
+	player_connected.emit(peer_id, player_info)
+
+
+# ==========================================
 # --- SYSTEM MULTIPLAYER CALLBACKS ---
+# ==========================================
 
 ## Triggered on EVERY machine when a new peer successfully connects
 func _on_peer_connected(id: int) -> void:
-	# If we are the Server, we should send our player data to the newly connected peer.
-	# (Advanced synchronization logic for existing players will also be handled here)
-	pass
+	if not multiplayer.is_server():
+		return
+	
+	for existing_id in PlayerManager.players_state.keys():
+		if existing_id == id:
+			continue
+		var existing_data = PlayerManager.players_state[existing_id]
+		_sync_existing_player_rpc.rpc_id(id, existing_id, existing_data)
 
 ## Triggered when a peer disconnects from the session
 func _on_peer_disconnected(id: int) -> void:
@@ -118,6 +110,8 @@ func _on_connected_ok() -> void:
 	
 	# Send self data to the Server and other peers
 	_register_player_rpc.rpc(my_data)
+	
+	connection_succeeded.emit()
 
 ## Triggered ONLY on the CLIENT when connection attempt fails
 func _on_connected_fail() -> void:
@@ -128,10 +122,3 @@ func _on_connected_fail() -> void:
 func _on_server_disconnected() -> void:
 	remove_multiplayer_peer()
 	server_disconnected.emit()
-
-func search_for_rooms() -> void:
-	found_room.clear()
-	discovery_client.close()
-	discovery_client.set_broadcast_enabled(true)
-	discovery_client.set_dest_address("255.255.255.255", DISCOVERY_PORT)
-	discovery_client.put_packet(DISCOVERY_PING.to_utf8_buffer())
