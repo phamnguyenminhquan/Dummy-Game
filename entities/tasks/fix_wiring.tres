@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="Task" format=3 uid="uid://bf8r0jxjq1egl"]
+
+[ext_resource type="Script" uid="uid://b28w3eeo05fdr" path="res://entities/tasks/task.gd" id="1_ymvnl"]
+
+[resource]
+script = ExtResource("1_ymvnl")
+title = "Fix Wiring"
+description = "connect 4 wires of the same color"
+point = 10
+metadata/_custom_type_script = "uid://b28w3eeo05fdr"

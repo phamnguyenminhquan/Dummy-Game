@@ -3,14 +3,6 @@ extends Node
 # Số lượng Impostor (sau này có thể để Host tự setting)
 var num_impostors: int = 1
 
-# Database nhiệm vụ được đóng gói dưới dạng Array[Dictionary]
-var all_tasks_database: Array[Dictionary] = [
-	{"title": "Fix Wiring", "description": "Connect matching wires in Electrical.", "point": 10},
-	{"title": "Swipe Card", "description": "Swipe ID card in Admin room.", "point": 5},
-	{"title": "Download Data", "description": "Download data from Weapons to Admin.", "point": 15},
-	{"title": "Empty Garbage", "description": "Empty the garbage chute in Cafeteria.", "point": 10}
-]
-
 # Hàm này sẽ được gọi bên trong main_test.tscn khi Host bấm "Start Game"
 func start_match():
 	# Chỉ Server mới có quyền chia Role và Task
@@ -48,28 +40,33 @@ func assign_tasks():
 	var player_ids = PlayerManager.players_state.keys()
 	
 	for id in player_ids:
-		# Đọc Role mà Server vừa gán ở trên
 		var role = PlayerManager.players_state[id]["role"]
 		var assigned_tasks: Array = []
 		
 		if role == "Crewmate":
-			# Bốc ngẫu nhiên 3 task cho Crewmate
-			var shuffled_tasks = all_tasks_database.duplicate()
-			shuffled_tasks.shuffle()
-			assigned_tasks = shuffled_tasks.slice(0, 3)
+			# 1. Bốc ngẫu nhiên 1 Object Task (.tres) từ Database
+			var random_tres_task: Task = TaskDatabase.available_tasks.pick_random()
+			
+			# 2. CHUYỂN ĐỔI (ÉP KIỂU): Bóc tách dữ liệu từ .tres nhét vào Dictionary
+			var task_dict = {
+				"title": random_tres_task.title,
+				"description": random_tres_task.description,
+				"point": random_tres_task.point
+			}
+			assigned_tasks = [task_dict]
 		else:
-			# Impostor nhận Fake Task
+			# Impostor
 			assigned_tasks = [
-				{"title": "Fake Task: Swipe Card", "description": "Pretend to swipe card.", "point": 0}
+				{"title": "Fake Task", "description": "Đi loanh quanh giả vờ làm nhiệm vụ.", "point": 0}
 			]
 			
-		# Bắn danh sách task xuống Client
+		# Bắn mảng chứa Dictionary này qua mạng (An toàn tuyệt đối)
 		rpc_id(id, "receive_task_list", assigned_tasks)
 
 # ==========================================
 # RPC CHO CLIENT - NƠI PQ SẼ VIẾT UI
 # ==========================================
-@rpc("authority", "call_remote", "reliable")
+@rpc("authority", "call_local", "reliable")
 func receive_role(assigned_role: String):
 	# Khi Client nhận được Role, cập nhật ngay vào biến local của nó
 	PlayerManager.local_player_data["role"] = assigned_role
@@ -77,7 +74,7 @@ func receive_role(assigned_role: String):
 	
 	# TODO: PQ sẽ gọi hàm hiển thị màn hình Crewmate/Impostor ở đây
 
-@rpc("authority", "call_remote", "reliable")
+@rpc("authority", "call_local", "reliable")
 func receive_task_list(tasks_data: Array):
 	print("[Client] Nhận được danh sách nhiệm vụ: ", tasks_data)
 	

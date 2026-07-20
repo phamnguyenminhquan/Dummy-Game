@@ -21,6 +21,7 @@ NetworkManager="*uid://c16obdlaat3td"
 PlayerManager="*uid://xjcx2xd120eo"
 ServerManager="*uid://bf7pb1yfx0j8f"
 RoomDiscoveryManager="*uid://bvjylmh5wjrrw"
+TaskDatabase="*uid://dnaf0ts60ywn6"
 
 [display]
 
