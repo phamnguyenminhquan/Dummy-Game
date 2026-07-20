@@ -1,7 +1,7 @@
 extends CharacterBody2D
 
 # Movement speed of the player
-@export var SPEED = 500.0
+@export var SPEED = 200.0
 
 # References to child nodes
 @onready var camera = $Camera2D
@@ -34,29 +34,31 @@ func _physics_process(_delta):
 	if input_direction != Vector2.ZERO:
 		velocity = input_direction * SPEED
 		
-		# --- ANIMATION LOGIC ---
-		# 1. Flip the sprite depending on direction
-		if input_direction.x != 0:
-			animation.animation = "walk"
-			# Prevent weird behavior
-			animation.flip_v = false
-			# If x is negative (moving left), flip_h becomes true
-			animation.flip_h = input_direction.x < 0
-		elif input_direction.y != 0:
-			animation.animation = "up"
-			# If y is positive (moving down), flip_v become true
-			animation.flip_v = input_direction.y > 0
+		# --- ANIMATION LOGIC (Đã tối ưu) ---
+		# 1. Luôn sử dụng cảnh "walk" cho mọi hướng di chuyển
+		animation.animation = "walk"
 		
-		# 2. Play animation
-		animation.play()
+		# Khóa lật dọc để nhân vật không bao giờ bị lộn ngược đầu khi đi lên/xuống
+		animation.flip_v = false 
+		
+		# 2. Chỉ lật ảnh theo chiều ngang (flip_h) nếu có nhấn phím trái/phải
+		if input_direction.x != 0:
+			animation.flip_h = input_direction.x > 0
+		
+		# 3. Play animation
+		if not animation.is_playing():
+			animation.play("walk")
+			# Ép hoạt ảnh nhảy sang frame 1 (nhấc chân) ngay lập tức khi vừa nhấn phím
+			animation.frame = 1
 	else:
 		# Stop moving
 		velocity.x = move_toward(velocity.x, 0, SPEED)
 		velocity.y = move_toward(velocity.y, 0, SPEED)
 		
-		# 3. Stop the animation when standing still
+		# 4. Stop the animation when standing still
 		animation.stop()
-		# Optional: Reset to the first frame so they look like they are in an "idle" stance
+		# Reset về frame đầu tiên (frame 0) để tạo dáng đứng im (Idle)
 		animation.frame = 0
+		
 	# Apply the movement and handle collisions
 	move_and_slide()
