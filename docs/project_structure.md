@@ -1,65 +1,68 @@
 # Project Structure
 
-Below is the structure of the main directories and files in the project, along with a brief description of their roles:
+## Below is the structure of the main directories and files in the project, along with a brief description of their roles:
 
 ```text
 res://
 │
-├── 📂 assets/                 # Contains static game resources
-│   ├── 📂 audio/              # Background music and sound effects (SFX)
-│   ├── 📂 fonts/              # Fonts used in the game
-│   └── 📂 textures/           # 2D images, character sprites, environment textures
-│       └── 📂 tilesets/       # Tilesets for map building
+├── 📂 assets/                          # Static game resources and media
+│   ├── 📂 audio/                       # Background music (BGM) and sound effects (SFX)
+│   ├── 📂 fonts/                       # Custom typography and font assets
+│   └── 📂 textures/                    # 2D visual assets, character sprites, and environment textures
+│       └── 📂 tilesets/                # Tilemap resources for level design
 │
-├── 📂 autoload/               # Contains Singleton scripts running in the background
-│   ├── 📜 network_manager.gd  # Manages network connections (Host/Join), ENet
-│   ├── 📜 game_manager.gd     # Manages general game states (win, lose, start match)
-│   ├── 📜 player_manager.gd   # Manages player data, lists, and IDs in the lobby
-│   ├── 📜 room_discovery_manager.gd # Manages local network room discovery (LAN)
-│   ├── 📜 server_manager.gd   # Handles server-side logic (roles, tasks)
-│   └── 📜 vote_manager.gd     # Handles voting system logic during meetings
+├── 📂 autoload/                        # Global Singleton scripts running persistently in the background
+│   ├── 📜 network_manager.gd           # Handles high-level ENet network connection setup (Host/Join)
+│   ├── 📜 game_manager.gd              # Manages core match states (Lobby, Playing, Victory, Defeat)
+│   ├── 📜 player_manager.gd            # Tracks active player instances, and peer IDs, data
+│   ├── 📜 room_discovery_manager.gd    # Handles local network (LAN) host broadcasting and room discovery
+│   ├── 📜 server_manager.gd            # Server-authoritative logic (role assignment, task allocation)
+│   ├── 📜 task_manager.gd              # Global task database and assignment manager (loading, randomizing)
+│   └── 📜 vote_manager.gd              # Orchestrates voting logic, tallying, and ejection during meetings
 │
-├── 📂 common/                 # Contains shared files for the entire project
-│   ├── 📜 constants.gd        # Declares constants (speed, time, scene names, etc.)
-│   ├── 📜 enums.gd            # Declares enumerations (Role, GameState, etc.)
-│   └── 📜 utils.gd            # Contains shared utility functions (math, string formatting)
+├── 📂 common/                          # Shared utilities and configurations across the project
+│   ├── 📜 constants.gd                 # Global constants (movement speeds, timer durations, scene paths)
+│   ├── 📜 enums.gd                     # Global enumerations (Role, GameState, TaskType, etc.)
+│   └── 📜 utils.gd                     # Helper functions for math, string formatting, and common logic
 │
-├── 📂 docs/                   # Project documentation
-│   ├── 📂 git/                # Git workflow and convention guides
-│   └── 📜 project_structure.md# Current file describing the project structure
+├── 📂 docs/                            # Documentation and developer guides
+│   ├── 📂 git/                         # Git workflow, branching strategy, and commit conventions
+│   └── 📜 project_structure.md         # Detailed overview of the project directory structure
 │
-├── 📂 entities/               # Contains entities (characters, objects) with independent logic
-│   ├── 📂 player/             # Contains everything related to the player
-│   │   ├── 📜 player.tscn     # Scene containing player visuals and collision
-│   │   ├── 📜 player.gd       # Movement and interaction control logic
-│   │   └── 📂 abilities/      # Special abilities (Impostor's Kill, Vent, etc.)
-│   └── 📂 tasks/              # Group of task-related features
-│       ├── 📜 task.gd         # Main task logic script
-│       ├── 📜 task.tscn       # Main task UI scene
-│       ├── 📜 task_base.gd    # Base script for other tasks to inherit
-│       ├── 📂 swipe_card/     # Swipe card task
-│       └── 📂 fix_wiring/     # Fix wiring task
+├── 📂 entities/                        # Game entities and gameplay objects containing self-contained logic
+│   ├── 📂 player/                      # Player character assets and logic
+│   │   ├── 📜 player.tscn              # Player scene (visuals, collision layers, and interaction areas)
+│   │   ├── 📜 player.gd                # Local and networked player movement and input logic
+│   │   └── 📂 abilities/               # Specific character abilities (e.g., Impostor Kill, Venting)
+│   └── 📂 tasks/                       # Task system modules and specific mini-game tasks
+│       ├── 📜 task_resource.gd         # Custom Resource definition storing task data (ID, name, location)
+│       ├── 📜 task.tscn                # Reusable UI frame/dialog for displaying active task mini-games
+│       ├── 📜 task_base.gd             # Base class containing core logic for mini-game tasks to inherit
+│       ├── 📂 resources/               # `.tres` data files defined using `task_resource.gd`
+│       ├── 📂 swipe_card/              # Mini-game scene and logic for the "Swipe Card" task
+│       └── 📂 fix_wiring/              # Mini-game scene and logic for the "Fix Wiring" task
 │
-├── 📂 scenes/                 # Contains main screens and game scenes
-│   ├── 📂 main_menu/          # Main menu UI directory
-│   │   ├── 📜 main_menu.gd    # Main menu script
-│   │   └── 📜 main_menu.tscn  # Main menu scene
-│   ├── 📂 lobby/              # Lobby UI directory
-│   │   ├── 📜 lobby.gd        # Lobby script
-│   │   └── 📜 lobby.tscn      # Lobby scene
-│   ├── 📂 gameplay/           # Main map and gameplay environment
-│   │   ├── 📜 gameplay.tscn   # Root scene containing the game map
-│   │   └── 📂 map_elements/   # Interactable map elements (doors, tables, chairs)
-│   └── 📂 ui/                 # In-game user interface (Overlay UI)
-│       ├── 📜 hud.tscn        # Heads-up display (buttons, minimap)
-│       ├── 📜 voting_ui.tscn  # Voting screen UI
-│       └── 📜 meeting_ui.tscn # Emergency meeting notification UI
+├── 📂 scenes/                          # Game scenes and user interfaces
+│   ├── 📂 main_menu/                   # Main menu interface
+│   │   ├── 📜 main_menu.gd             # Main menu UI interaction handler
+│   │   └── 📜 main_menu.tscn           # Main menu scene
+│   ├── 📂 lobby/                       # Pre-game lobby interface
+│   │   ├── 📜 lobby.gd                 # Player readiness and lobby configuration logic
+│   │   └── 📜 lobby.tscn               # Lobby UI scene
+│   ├── 📂 gameplay/                    # Primary gameplay loop scenes and environment
+│   │   ├── 📜 gameplay.tscn            # Root gameplay scene housing the map and spawn points
+│   │   └── 📂 map_elements/            # Interactive environment objects (doors, emergency button, vents)
+│   └── 📂 ui/                          # In-game HUD and modal overlays
+│       ├── 📜 hud.tscn                 # In-game heads-up display (action buttons, task list, minimap)
+│       ├── 📜 voting_ui.tscn           # Voting interface overlay used during meetings
+│       └── 📜 meeting_ui.tscn          # Emergency meeting popup and transition screens
 │
-├── 📂 tests/                  # Contains scenes for internal logic testing
-│   ├── 📜 lobby.tscn          # Draft lobby test scene
-│   ├── 📜 main_test.gd        # Game start logic test script
-│   ├── 📜 main_test.tscn      # Temporary test map
-│   └── 📜 multiplayer_spawner.gd # Networked player spawning support
+├── 📂 tests/                           # Internal test environments and prototyping scripts
+│   ├── 📜 lobby.tscn                   # Standalone test scene for lobby interface features
+│   ├── 📜 main_test.gd                 # Test script for validating game startup and flow logic
+│   ├── 📜 main_test.tscn               # Playground map scene for testing mechanics
+│   └── 📜 multiplayer_spawner.gd       # Helper script for testing multiplayer node spawning
 │
-├── 📜 icon.svg                # Default Godot/Game icon
-└── 📜 README.md               # Repository introduction and overview
+├── 📜 icon.svg                         # Default Godot project icon
+└── 📜 README.md                        # Project introduction, setup instructions, and overview
+```
