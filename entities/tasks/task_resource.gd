@@ -1,5 +1,5 @@
+class_name TaskResource
 extends Resource
-class_name Task
 
 @export var title: String
 @export var description: String

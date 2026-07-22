@@ -4,7 +4,9 @@ extends Node
 var local_player_data: Dictionary = {
 	"name": "Player",
 	"role": "Crewmate", # Default role, will be assigned when the game starts
-	"is_alive": true
+	"is_alive": true,
+	"assigned_tasks": [],
+	"done_tasks": []
 }
 
 # Dictionary storing the game state/metadata of all players in the lobby/game
