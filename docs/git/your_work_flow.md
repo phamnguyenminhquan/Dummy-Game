@@ -57,5 +57,15 @@ git pull upstream main
 git push origin main
 ```
 
+## 6. Stashing Local Work
+* Use `stash` when you have uncommitted changes in your working directory, but need a clean state to pull updates, switch branches, or perform a merge.
+```bash
+# Temporarily save and hide your uncommitted changes
+git stash
+
+# Re-apply your saved changes back to your working directory and remove them from the stash list
+git stash pop
+```
+
 ## NEXT STEP:
 * [CLEAN UP BRANCH](clean_up_branch.md)
