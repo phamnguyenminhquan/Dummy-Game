@@ -3,7 +3,7 @@ extends Node
 # Local player's data (the player sitting in front of this screen)
 var local_player_data: Dictionary = {
 	"name": "Player",
-	"role": "Crewmate", # Default role, will be assigned when the game starts
+	"role": Enums.Role.CREWMATE, # Default role, will be assigned when the game starts
 	"is_alive": true,
 	"assigned_tasks": [],
 	"done_tasks": []
@@ -18,7 +18,9 @@ func get_local_network_data() -> Dictionary:
 	return {
 		"name": local_player_data["name"],
 		"role": local_player_data["role"],
-		"is_alive": local_player_data["is_alive"]
+		"is_alive": local_player_data["is_alive"],
+		"assigned_tasks": local_player_data["assigned_tasks"],
+		"done_tasks": local_player_data["done_tasks"]
 	}
 
 ## Registers or updates a player's data in the global state
@@ -33,8 +35,10 @@ func unregister_player(peer_id: int) -> void:
 ## Resets all player states to default (useful when leaving a game)
 func reset_manager() -> void:
 	players_state.clear()
-	local_player_data["role"] = "Crewmate"
+	local_player_data["role"] = Enums.Role.CREWMATE
 	local_player_data["is_alive"] = true
+	local_player_data["assigned_tasks"] = []
+	local_player_data["done_tasks"] = []
 
 func get_player_count() -> int:
 	return players_state.size()
