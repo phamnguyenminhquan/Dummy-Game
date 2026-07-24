@@ -7,10 +7,6 @@ signal server_disconnected
 signal connection_failed
 signal connection_succeeded
 
-const PORT: int = 7000
-const DEFAULT_SERVER_IP: String = "127.0.0.1" # IPv4 Localhost
-const MAX_CONNECTIONS: int = 32
-
 
 func _ready() -> void:
 	# Connect Godot's built-in multiplayer connection events
@@ -28,7 +24,7 @@ func _ready() -> void:
 ## Hosts a new game server
 func create_game(p_room_name: String = "Default Room") -> Error:
 	var peer = ENetMultiplayerPeer.new()
-	var error = peer.create_server(PORT, MAX_CONNECTIONS)
+	var error = peer.create_server(Constants.PORT, Constants.MAX_CONNECTIONS)
 	if error != OK:
 		return error
 	multiplayer.multiplayer_peer = peer
@@ -44,9 +40,9 @@ func create_game(p_room_name: String = "Default Room") -> Error:
 ## Joins an existing game server using an IP address
 func join_game(address: String = "") -> Error:
 	if address.is_empty():
-		address = DEFAULT_SERVER_IP
+		address = Constants.DEFAULT_SERVER_IP
 	var peer = ENetMultiplayerPeer.new()
-	var error = peer.create_client(address, PORT)
+	var error = peer.create_client(address, Constants.PORT)
 	if error != OK:
 		return error
 	multiplayer.multiplayer_peer = peer
@@ -67,9 +63,17 @@ func remove_multiplayer_peer() -> void:
 ## RPC function used by clients to send their own data to everyone else
 @rpc("any_peer", "reliable")
 func _register_player_rpc(player_info: Dictionary) -> void:
+	if not multiplayer.is_server():
+		return
 	var sender_id = multiplayer.get_remote_sender_id()
 	PlayerManager.register_player(sender_id, player_info)
 	player_connected.emit(sender_id, player_info)
+	
+	# Relay the new player to every other already-connected client
+	for id in PlayerManager.players_state.keys():
+		if id == sender_id or id == 1:
+			continue
+		_sync_existing_player_rpc.rpc_id(id, sender_id, player_info)
 
 ## RPC function used ONLY by the Server to introduce an existing player
 ## to a newly-connected peer (sender_id can't be trusted here, so we pass the id explicitly)

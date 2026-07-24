@@ -22,6 +22,8 @@ PlayerManager="*uid://xjcx2xd120eo"
 ServerManager="*uid://bf7pb1yfx0j8f"
 RoomDiscoveryManager="*uid://bvjylmh5wjrrw"
 TaskManager="*uid://dnaf0ts60ywn6"
+GameManager="*uid://chvsbryum5ajx"
+VoteManager="*uid://cqt4t350gd1jn"
 
 [display]
 

@@ -9,9 +9,6 @@ extends Node
 
 signal room_list_updated(rooms: Dictionary)
 
-const DISCOVERY_PORT: int = 7001
-const DISCOVERY_PING: String = "ROOM_DISCOVERY_PING"
-
 var room_name: String = "Default Room"
 var discovery_server := PacketPeerUDP.new()
 var discovery_client := PacketPeerUDP.new()
@@ -24,7 +21,7 @@ func _process(_delta: float) -> void:
 	# HOST SIDE: answer discovery pings from clients looking for rooms
 	if is_hosting_broadcast and discovery_server.get_available_packet_count() > 0:
 		var packet := discovery_server.get_packet().get_string_from_utf8()
-		if packet == DISCOVERY_PING:
+		if packet == Constants.DISCOVERY_PING:
 			var sender_ip := discovery_server.get_packet_ip()
 			var sender_port := discovery_server.get_packet_port()
 			var reply := "%s|%d" % [room_name, PlayerManager.get_player_count()]
@@ -50,7 +47,7 @@ func start_broadcasting(p_room_name: String = "Default Room") -> Error:
 	if is_hosting_broadcast:
 		stop_broadcasting()
 	
-	var error := discovery_server.bind(DISCOVERY_PORT)
+	var error := discovery_server.bind(Constants.DISCOVERY_PORT)
 	if error != OK:
 		return error
 	
@@ -85,8 +82,8 @@ func search_for_rooms() -> void:
 		return
 	
 	discovery_client.set_broadcast_enabled(true)
-	discovery_client.set_dest_address("255.255.255.255", DISCOVERY_PORT)
-	discovery_client.put_packet(DISCOVERY_PING.to_utf8_buffer())
+	discovery_client.set_dest_address("255.255.255.255", Constants.DISCOVERY_PORT)
+	discovery_client.put_packet(Constants.DISCOVERY_PING.to_utf8_buffer())
 	is_searching = true
 
 ## Stops listening for room replies and frees the socket.

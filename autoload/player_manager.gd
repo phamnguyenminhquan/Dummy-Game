@@ -1,5 +1,7 @@
 extends Node
 
+signal role_assigned(role: Enums.Role)
+
 # Local player's data (the player sitting in front of this screen)
 var local_player_data: Dictionary = {
 	"name": "Player",

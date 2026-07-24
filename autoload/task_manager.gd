@@ -4,9 +4,6 @@ extends Node
 signal task_completed(player_id: int, task_id: String)
 signal total_progress_updated(current_progress: float)
 signal all_tasks_completed
-## Emitted on the client after it receives and resolves its task list from the server.
-## NOTE: this was previously referenced in server_manager.gd's receive_task_list()
-## but never declared here, which would throw a runtime error on first use.
 signal client_tasks_updated(task_resources: Array)
 
 # Dictionary holding every Task Resource, keyed by ID (the file name)

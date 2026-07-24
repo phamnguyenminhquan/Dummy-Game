@@ -2,11 +2,8 @@ extends Node
 
 # Number of Impostors (configurable by the Host in the Lobby)
 var num_impostors: int = 1
-
 # Number of tasks assigned to each Crewmate per match
 var tasks_per_crewmate: int = 2
-
-const HOST_ID: int = 1
 
 
 # ==========================================
@@ -35,6 +32,7 @@ func _reset_match_state(player_ids: Array) -> void:
 	for id in player_ids:
 		PlayerManager.players_state[id]["assigned_tasks"] = []
 		PlayerManager.players_state[id]["done_tasks"] = []
+		PlayerManager.players_state[id]["is_alive"] = true
 	# Delegate to TaskManager's own reset instead of reaching into its fields
 	# directly, so this stays in sync if TaskManager's reset logic ever changes.
 	TaskManager.reset_manager()
@@ -60,7 +58,7 @@ func assign_roles(player_ids: Array = PlayerManager.players_state.keys()) -> voi
 		
 		# 2. Send the Role to the Client. The Host handles it directly,
 		#    no need for an RPC to itself.
-		if id == HOST_ID:
+		if id == Constants.HOST_ID:
 			receive_role(assigned_role)
 		else:
 			rpc_id(id, "receive_role", assigned_role)
@@ -94,7 +92,7 @@ func assign_tasks(player_ids: Array = PlayerManager.players_state.keys()) -> voi
 		PlayerManager.players_state[id]["assigned_tasks"] = assigned_task_ids
 		
 		# ONLY SEND THE ID LIST OVER THE NETWORK (great bandwidth optimization!)
-		if id == HOST_ID:
+		if id == Constants.HOST_ID:
 			receive_task_list(assigned_task_ids)
 		else:
 			rpc_id(id, "receive_task_list", assigned_task_ids)
@@ -120,7 +118,7 @@ func request_complete_task(task_id: String) -> void:
 func complete_task_as_host(task_id: String) -> void:
 	if not multiplayer.is_server():
 		return
-	_try_complete_task(HOST_ID, task_id)
+	_try_complete_task(Constants.HOST_ID, task_id)
 
 
 func _try_complete_task(player_id: int, task_id: String) -> void:
@@ -141,14 +139,6 @@ func _try_complete_task(player_id: int, task_id: String) -> void:
 	player_data["done_tasks"] = done
 	
 	TaskManager.complete_task(player_id, task_id)
-	_check_crewmate_win()
-
-
-func _check_crewmate_win() -> void:
-	if TaskManager.total_tasks_count > 0 and TaskManager.completed_tasks_count >= TaskManager.total_tasks_count:
-		# TODO: hook this up to your GameManager / round-end flow
-		print("[ServerManager] All tasks completed — Crewmates win!")
-		# GameManager.end_match(Enums.WinCondition.CREWMATES_TASKS)
 
 
 # ==========================================
@@ -161,7 +151,7 @@ func receive_role(assigned_role: Enums.Role) -> void:
 	print("[Peer %d] My role is: " % multiplayer.get_unique_id(), Enums.Role.keys()[assigned_role])
 	
 	# Emit a signal so the UI / GameManager can handle the role reveal screen
-	# GameManager.role_assigned.emit(assigned_role)
+	PlayerManager.role_assigned.emit(assigned_role)
 
 @rpc("authority", "call_remote", "reliable")
 func receive_task_list(task_ids: Array) -> void:
