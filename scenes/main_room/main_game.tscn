@@ -4,6 +4,53 @@
 [ext_resource type="Script" uid="uid://demydplk6cjin" path="res://scenes/main_room/multiplayer_spawner.gd" id="1_dgpx4"]
 [ext_resource type="PackedScene" uid="uid://bycqqn40d3ngn" path="res://entities/player/player.tscn" id="2_cwqi1"]
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_panel"]
+bg_color = Color(0.086, 0.09, 0.145, 0.85)
+corner_radius_top_left = 12
+corner_radius_top_right = 12
+corner_radius_bottom_right = 12
+corner_radius_bottom_left = 12
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.32, 0.36, 0.5, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ready_normal"]
+bg_color = Color(0.235, 0.6, 0.435, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ready_hover"]
+bg_color = Color(0.29, 0.72, 0.52, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_start_normal"]
+bg_color = Color(0.85, 0.6, 0.15, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_start_hover"]
+bg_color = Color(0.95, 0.7, 0.2, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_start_disabled"]
+bg_color = Color(0.4, 0.4, 0.42, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
 [node name="MainGame" type="Node2D" unique_id=1745043348]
 script = ExtResource("1_cwqi1")
 
@@ -15,20 +62,55 @@ network_player = ExtResource("2_cwqi1")
 
 [node name="LobbyUI" type="CanvasLayer" parent="." unique_id=1188591432]
 
-[node name="Container" type="VBoxContainer" parent="LobbyUI" unique_id=438828529]
-offset_right = 40.0
-offset_bottom = 40.0
+[node name="PanelContainer" type="PanelContainer" parent="LobbyUI" unique_id=438828530]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -280.0
+offset_top = 24.0
+offset_right = -24.0
+offset_bottom = 340.0
+grow_horizontal = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_panel")
 
-[node name="StartButton" type="Button" parent="LobbyUI/Container" unique_id=977505485]
+[node name="Margin" type="MarginContainer" parent="LobbyUI/PanelContainer" unique_id=438828531]
 layout_mode = 2
-text = "Start
-"
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 16
 
-[node name="ReadyButton" type="Button" parent="LobbyUI/Container" unique_id=2015799275]
+[node name="Container" type="VBoxContainer" parent="LobbyUI/PanelContainer/Margin" unique_id=438828529]
 layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="TitleLabel" type="Label" parent="LobbyUI/PanelContainer/Margin/Container" unique_id=438828532]
+layout_mode = 2
+text = "Players"
+theme_override_font_sizes/font_size = 20
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+
+[node name="PlayerListContainer" type="VBoxContainer" parent="LobbyUI/PanelContainer/Margin/Container" unique_id=264218524]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="ReadyButton" type="Button" parent="LobbyUI/PanelContainer/Margin/Container" unique_id=2015799275]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 40)
 text = "Ready"
+theme_override_font_sizes/font_size = 16
+theme_override_styles/normal = SubResource("StyleBoxFlat_ready_normal")
+theme_override_styles/hover = SubResource("StyleBoxFlat_ready_hover")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_ready_normal")
 
-[node name="PlayerListContainer" type="VBoxContainer" parent="LobbyUI/Container" unique_id=264218524]
+[node name="StartButton" type="Button" parent="LobbyUI/PanelContainer/Margin/Container" unique_id=977505485]
 layout_mode = 2
+custom_minimum_size = Vector2(0, 40)
+text = "Start"
+theme_override_font_sizes/font_size = 16
+theme_override_styles/normal = SubResource("StyleBoxFlat_start_normal")
+theme_override_styles/hover = SubResource("StyleBoxFlat_start_hover")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_start_normal")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_start_disabled")
 
 [node name="SceneContainer" type="Node2D" parent="." unique_id=975847748]
